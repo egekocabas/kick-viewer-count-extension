@@ -164,7 +164,9 @@ function scoreSidebarStatusCandidate(
     score += 3;
   }
 
-  if (score > 0 && element.childElementCount <= 2) {
+  if (score > 0 && element.childElementCount === 0) {
+    score += 2;
+  } else if (score > 0 && element.childElementCount <= 2) {
     score += 1;
   }
 

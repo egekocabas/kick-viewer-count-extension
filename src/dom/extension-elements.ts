@@ -51,8 +51,8 @@ export function ensureDomInjectionStyles(): void {
       min-height: 20px;
       border-radius: 4px;
       padding: 3px 6px;
-      background: rgba(10, 10, 12, 0.78);
-      color: #fff;
+      background: rgba(0, 48, 18, 0.84);
+      color: #d7ffcf;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0;
@@ -62,7 +62,6 @@ export function ensureDomInjectionStyles(): void {
     .kvc-sidebar-count {
       display: inline-flex;
       align-items: center;
-      margin-left: 6px;
       color: #d7ffcf;
       font-size: 12px;
       font-weight: 700;
@@ -76,8 +75,8 @@ export function ensureDomInjectionStyles(): void {
       margin-top: 6px;
       border-radius: 4px;
       padding: 4px 7px;
-      background: rgba(31, 41, 35, 0.72);
-      color: #ecffe8;
+      background: rgba(0, 48, 18, 0.72);
+      color: #d7ffcf;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0;
