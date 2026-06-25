@@ -1,6 +1,6 @@
 # Kick Viewer Count
 
-Kick Viewer Count is a public browser extension project for Kick.com. It surfaces viewer-count-related data that Kick pages already load themselves and adds extension-owned viewer count indicators where the page does not display a count.
+Kick Viewer Count is a browser extension for Kick.com that shows viewer counts that are not displayed by the site. It captures data Kick pages already load and injects viewer count indicators on livestream cards, the sidebar, and channel headers where no native count is shown.
 
 All captured data stays in memory during the page session. The extension does not use an external backend and does not transmit viewer-count data outside the local browser.
 
