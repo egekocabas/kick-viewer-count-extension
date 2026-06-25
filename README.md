@@ -8,7 +8,6 @@ Supported target browsers:
 
 - Google Chrome
 - Mozilla Firefox
-- Microsoft Edge
 
 ## Local Development
 
@@ -24,7 +23,6 @@ Browser-specific development commands are also available:
 ```sh
 npm run dev:chrome
 npm run dev:firefox
-npm run dev:edge
 ```
 
 ## Technical Overview
