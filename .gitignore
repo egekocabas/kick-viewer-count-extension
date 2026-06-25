@@ -1,0 +1,8 @@
+node_modules/
+.output/
+.wxt/
+dist/
+.idea/
+*.log
+.DS_Store
+.idea

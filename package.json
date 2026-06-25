@@ -1,0 +1,55 @@
+{
+  "name": "kick-viewer-count-extension",
+  "version": "0.1.0",
+  "description": "A browser extension that surfaces viewer-count-related data already loaded by Kick pages.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egekocabas/kick-viewer-count-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/egekocabas/kick-viewer-count-extension/issues"
+  },
+  "homepage": "https://github.com/egekocabas/kick-viewer-count-extension#readme",
+  "packageManager": "npm@11.16.0",
+  "engines": {
+    "node": "24.18.0",
+    "npm": "11.16.0"
+  },
+  "scripts": {
+    "dev": "wxt",
+    "dev:chrome": "wxt -b chrome --mv3",
+    "dev:edge": "wxt -b edge --mv3",
+    "dev:firefox": "wxt -b firefox --mv3",
+    "build": "wxt build",
+    "build:chrome": "wxt build -b chrome --mv3",
+    "build:edge": "wxt build -b edge --mv3",
+    "build:firefox": "wxt build -b firefox --mv3",
+    "zip": "wxt zip",
+    "zip:chrome": "wxt zip -b chrome --mv3",
+    "zip:edge": "wxt zip -b edge --mv3",
+    "zip:firefox": "wxt zip -b firefox --mv3",
+    "lint": "wxt prepare && eslint .",
+    "lint:fix": "wxt prepare && eslint . --fix",
+    "typecheck": "wxt prepare && tsc --noEmit"
+  },
+  "keywords": [
+    "browser-extension",
+    "kick",
+    "wxt",
+    "typescript"
+  ],
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "eslint": "9.39.4",
+    "globals": "17.7.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.62.0",
+    "wxt": "0.20.27"
+  },
+  "allowScripts": {
+    "esbuild@0.27.7": true,
+    "spawn-sync@1.0.15": true
+  }
+}
