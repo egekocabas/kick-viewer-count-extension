@@ -19,6 +19,7 @@
   },
   "scripts": {
     "dev": "wxt",
+    "devFirefox": "npm run dev -- --browser firefox",
     "dev:chrome": "wxt -b chrome --mv3",
     "dev:edge": "wxt -b edge --mv3",
     "dev:firefox": "wxt -b firefox --mv3",

@@ -1,6 +1,10 @@
 import { defineConfig } from 'wxt';
+import path from 'path';
 
 export default defineConfig({
+  webExt: {
+    disabled: true,
+  },
   manifest: ({ browser }) => ({
     name: 'Kick Viewer Count',
     description:

@@ -28,7 +28,7 @@ declare global {
 
 export default defineContentScript({
   matches: ['https://kick.com/*'],
-  runAt: 'document_idle',
+  runAt: 'document_start',
   allFrames: false,
   noScriptStartedPostMessage: true,
   async main(ctx) {
@@ -56,7 +56,7 @@ export default defineContentScript({
       handleCapturedKickApiMessage(state, event.data, domInjection);
     });
 
-    logger.info('Content script initialized at document_idle.');
+    logger.info('Content script initialized at document_start.');
   },
 });
 
