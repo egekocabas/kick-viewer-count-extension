@@ -23,9 +23,11 @@ function log(
   }
 
   if (details === undefined) {
+    // eslint-disable-next-line no-console
     console[level](LOG_PREFIX, message);
     return;
   }
 
+  // eslint-disable-next-line no-console
   console[level](LOG_PREFIX, message, details);
 }

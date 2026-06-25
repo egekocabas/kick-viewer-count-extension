@@ -8,6 +8,7 @@ import {
     KICK_MESSAGE_SOURCE,
     type CapturedKickApiMessage,
 } from '@/src/types/kick';
+import {logger} from '@/src/utils/devLogger';
 
 declare global {
     interface Window {
@@ -23,7 +24,7 @@ export default defineContentScript({
     noScriptStartedPostMessage: true,
     main() {
         if (window.__kickViewerCountPageHookInstalled) {
-            debugLog('Page hook already installed; skipping duplicate run.');
+            logger.debug('Page hook already installed; skipping duplicate run.');
             return;
         }
 
@@ -31,7 +32,7 @@ export default defineContentScript({
 
         patchResponseJson();
 
-        debugLog('Page hook installed.');
+        logger.debug('Page hook installed.');
     },
 });
 
@@ -136,7 +137,7 @@ function observeJsonPayload(
             emitCapturedPayload(endpoint, response.url || window.location.href, payload);
         })
         .catch((error: unknown) => {
-            debugLog('Failed to observe captured JSON response.', error);
+            logger.debug('Failed to observe captured JSON response.', error);
         });
 }
 
@@ -156,25 +157,12 @@ function emitCapturedPayload(
         };
 
         window.postMessage(message, window.location.origin);
-        debugLog('Captured Kick endpoint response.', {
+        logger.debug('Captured Kick endpoint response.', {
             endpoint: endpoint.type,
             debugName: endpoint.debugName,
             url,
         });
     } catch (error) {
-        debugLog('Failed to emit captured Kick endpoint response.', error);
+        logger.debug('Failed to emit captured Kick endpoint response.', error);
     }
-}
-
-function debugLog(message: string, details?: unknown): void {
-    if (!import.meta.env.DEV) {
-        return;
-    }
-
-    if (details === undefined) {
-        console.debug('[Kick Viewer Count]', message);
-        return;
-    }
-
-    console.debug('[Kick Viewer Count]', message, details);
 }
