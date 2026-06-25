@@ -106,11 +106,12 @@ export function createDomInjectionController(
     }
 
     observer = new MutationObserver((mutations) => {
-      if (mutations.every(isExtensionOwnedMutation)) {
-        return;
+      for (const mutation of mutations) {
+        if (!isExtensionOwnedMutation(mutation) && !isExcludedSubtreeMutation(mutation)) {
+          scheduleUpdate('mutation');
+          return;
+        }
       }
-
-      scheduleUpdate('mutation');
     });
 
     observer.observe(document.body, {
@@ -164,6 +165,17 @@ function dispatchUrlChangeIfNeeded(previousUrl: string): void {
   if (window.location.href !== previousUrl) {
     window.dispatchEvent(new Event(URL_CHANGE_EVENT));
   }
+}
+
+const CHAT_SUBTREE_SELECTOR = '#chatroom-messages, #channel-chatroom';
+
+function isExcludedSubtreeMutation(mutation: MutationRecord): boolean {
+  const el =
+    mutation.target instanceof Element
+      ? mutation.target
+      : (mutation.target as Text).parentElement;
+
+  return el ? el.closest(CHAT_SUBTREE_SELECTOR) !== null : false;
 }
 
 function isExtensionOwnedMutation(mutation: MutationRecord): boolean {

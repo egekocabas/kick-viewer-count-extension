@@ -68,25 +68,28 @@ export function updateChannelHeaderViewerCount(
   const anchor = livestreamTitle ?? usernameElement;
   const element = existing ?? createViewerCountElement('span');
 
-  insertAfter(anchor, element);
-
   const text = `${formatViewerCountLabel(stream.viewerCount)} viewers`;
 
-  updateViewerCountElement(element, {
+  const changed = updateViewerCountElement(element, {
     target: TARGET,
     slug,
     viewerCount: stream.viewerCount,
     text,
     className: 'kvc-channel-header-count',
   });
-  logViewerCountDomUpdate({
-    target: TARGET,
-    slug,
-    viewerCount: stream.viewerCount,
-    text,
-    element,
-    hostElement: headerRoot ?? anchor,
-  });
+
+  insertAfter(anchor, element);
+
+  if (changed) {
+    logViewerCountDomUpdate({
+      target: TARGET,
+      slug,
+      viewerCount: stream.viewerCount,
+      text,
+      element,
+      hostElement: headerRoot ?? anchor,
+    });
+  }
 
   summary.removed += removeViewerCountElements(scope, TARGET, element);
   summary.updated = 1;

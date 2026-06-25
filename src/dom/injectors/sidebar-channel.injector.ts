@@ -75,27 +75,30 @@ export function updateSidebarChannelViewerCounts(
     const element =
       findViewerCountElement(row, TARGET) ?? createViewerCountElement('span');
 
-    if (element.parentElement !== insertionTarget) {
-      insertionTarget.append(element);
-    }
-
     const text = formatViewerCountLabel(stream.viewerCount);
 
-    updateViewerCountElement(element, {
+    const changed = updateViewerCountElement(element, {
       target: TARGET,
       slug,
       viewerCount: stream.viewerCount,
       text,
       className: 'kvc-sidebar-count',
     });
-    logViewerCountDomUpdate({
-      target: TARGET,
-      slug,
-      viewerCount: stream.viewerCount,
-      text,
-      element,
-      hostElement: row,
-    });
+
+    if (element.parentElement !== insertionTarget) {
+      insertionTarget.append(element);
+    }
+
+    if (changed) {
+      logViewerCountDomUpdate({
+        target: TARGET,
+        slug,
+        viewerCount: stream.viewerCount,
+        text,
+        element,
+        hostElement: row,
+      });
+    }
 
     summary.removed += removeViewerCountElements(row, TARGET, element);
     summary.updated += 1;

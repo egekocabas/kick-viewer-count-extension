@@ -125,19 +125,30 @@ export function removeViewerCountElements(
 export function updateViewerCountElement(
   element: HTMLElement,
   options: ViewerCountElementOptions,
-): void {
+): boolean {
+  if (
+    element.dataset.kvcTarget === options.target &&
+    element.dataset.kvcSlug === options.slug &&
+    element.dataset.kvcCount === String(options.viewerCount)
+  ) {
+    return false;
+  }
+
   const ariaViewerCount = options.viewerCount.toLocaleString();
 
   element.className = `kvc-viewer-count ${options.className}`;
   element.dataset.kvcViewerCount = 'true';
   element.dataset.kvcTarget = options.target;
   element.dataset.kvcSlug = options.slug;
+  element.dataset.kvcCount = String(options.viewerCount);
   element.title = 'Added by Kick Viewer Count';
   element.setAttribute(
     'aria-label',
     `${ariaViewerCount} viewers, added by Kick Viewer Count`,
   );
   element.textContent = options.text;
+
+  return true;
 }
 
 export function formatViewerCountLabel(viewerCount: number): string {

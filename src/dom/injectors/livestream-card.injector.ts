@@ -65,27 +65,30 @@ export function updateLivestreamCardViewerCounts(
       findViewerCountElement(cardTarget.anchor, TARGET) ??
       createViewerCountElement('span');
 
-    if (element.parentElement !== cardTarget.anchor) {
-      cardTarget.anchor.append(element);
-    }
-
     const text = formatViewerCountLabel(stream.viewerCount);
 
-    updateViewerCountElement(element, {
+    const changed = updateViewerCountElement(element, {
       target: TARGET,
       slug: cardTarget.slug,
       viewerCount: stream.viewerCount,
       text,
       className: 'kvc-card-count',
     });
-    logViewerCountDomUpdate({
-      target: TARGET,
-      slug: cardTarget.slug,
-      viewerCount: stream.viewerCount,
-      text,
-      element,
-      hostElement: card,
-    });
+
+    if (element.parentElement !== cardTarget.anchor) {
+      cardTarget.anchor.append(element);
+    }
+
+    if (changed) {
+      logViewerCountDomUpdate({
+        target: TARGET,
+        slug: cardTarget.slug,
+        viewerCount: stream.viewerCount,
+        text,
+        element,
+        hostElement: card,
+      });
+    }
 
     summary.removed += removeViewerCountElements(card, TARGET, element);
     summary.updated += 1;
