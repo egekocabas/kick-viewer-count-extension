@@ -320,12 +320,46 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
     }, POLL_INTERVAL_MS);
   }
 
+  function pruneTrackedLivestreamIds(state: KickViewerCountState): void {
+    if (trackedLivestreamIds.size === 0) {
+      return;
+    }
+
+    const visibleSlugs = new Set<string>();
+
+    for (const card of document.querySelectorAll<HTMLElement>(LIVESTREAM_CARD_SELECTOR)) {
+      const target = findLivestreamCardTarget(card);
+      if (target) {
+        visibleSlugs.add(target.slug.toLowerCase());
+      }
+    }
+
+    let pruned = 0;
+
+    for (const id of trackedLivestreamIds) {
+      const stream = state.streamsByLivestreamId.get(String(id));
+      if (!stream || !visibleSlugs.has(stream.channelSlug)) {
+        trackedLivestreamIds.delete(id);
+        pruned += 1;
+      }
+    }
+
+    if (pruned > 0) {
+      logger.debug('Pruned tracked livestream IDs.', {
+        pruned,
+        remaining: trackedLivestreamIds.size,
+      });
+    }
+  }
+
   async function pollCurrentViewers(sessionId: number): Promise<void> {
     const deps = runtimeDeps;
 
     if (!deps || !isCurrentSession(sessionId)) {
       return;
     }
+
+    pruneTrackedLivestreamIds(deps.state);
 
     const livestreamIds = [...trackedLivestreamIds];
 
