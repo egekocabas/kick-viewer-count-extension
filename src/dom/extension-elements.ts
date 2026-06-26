@@ -74,7 +74,6 @@ export function ensureDomInjectionStyles(): void {
       display: inline-flex;
       align-items: center;
       width: fit-content;
-      margin-top: 6px;
       border-radius: 4px;
       padding: 4px 7px;
       background: rgba(0, 48, 18, 0.72);

@@ -71,7 +71,6 @@ export function updateChannelHeaderViewerCount(
     return summary;
   }
 
-  const anchor = livestreamTitle ?? usernameElement;
   const element = existing ?? createViewerCountElement('span');
 
   const text = formatViewerCountLabel(stream.viewerCount);
@@ -84,7 +83,15 @@ export function updateChannelHeaderViewerCount(
     className: 'kvc-channel-header-count',
   });
 
-  insertAfter(anchor, element);
+  const shareRow = findShareRow();
+  if (shareRow) {
+    if (element.parentElement !== shareRow || element !== shareRow.firstElementChild) {
+      shareRow.prepend(element);
+    }
+  } else {
+    const anchor = livestreamTitle ?? usernameElement;
+    insertAfter(anchor, element);
+  }
 
   if (changed) {
     logViewerCountDomUpdate({
@@ -93,7 +100,7 @@ export function updateChannelHeaderViewerCount(
       viewerCount: stream.viewerCount,
       text,
       element,
-      hostElement: headerRoot ?? anchor,
+      hostElement: headerRoot ?? usernameElement,
     });
   }
 
@@ -154,6 +161,19 @@ function insertAfter(anchor: HTMLElement, element: HTMLElement): void {
   if (element.parentElement !== parent || element.previousElementSibling !== anchor) {
     parent.insertBefore(element, anchor.nextSibling);
   }
+}
+
+function findShareRow(): HTMLElement | null {
+  const subButton = document.querySelector<HTMLElement>('[data-testid="sub-button"]');
+  const buttonsRow = subButton?.parentElement;
+  const container = buttonsRow?.parentElement;
+  const shareRow = container?.lastElementChild;
+
+  if (shareRow instanceof HTMLElement && shareRow !== buttonsRow) {
+    return shareRow;
+  }
+
+  return null;
 }
 
 function removeExisting(element: HTMLElement | null): number {
