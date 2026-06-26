@@ -25,6 +25,12 @@ npm run dev:chrome
 npm run dev:firefox
 ```
 
+## Assets
+
+Runtime extension assets live in `public/` and are copied into the packaged extension. WXT auto-discovers extension icons from `public/icons/16.png`, `public/icons/48.png`, and `public/icons/128.png`, so those files do not need to be manually listed in `wxt.config.ts`.
+
+Store listing and source media are kept outside the extension bundle under `store-assets/`. The Chrome/Firefox listing screenshots currently lives at `store-assets/screenshots`, and the source icon SVG lives at `store-assets/icons/icon.svg`.
+
 ## Technical Overview
 
 This project uses WXT and TypeScript with a minimal dependency footprint.
