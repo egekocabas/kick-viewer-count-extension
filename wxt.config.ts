@@ -7,6 +7,7 @@ export default defineConfig({
   manifest: ({ browser }) => ({
     name: 'Kick Viewer Count',
     description: 'Shows hidden viewer counts on Kick.com.',
+    homepage_url: 'https://github.com/egekocabas/kick-viewer-count-extension',
     ...(browser === 'firefox'
       ? {
           browser_specific_settings: {
