@@ -3,11 +3,13 @@ import type {
   NormalizedCurrentViewerEntry,
   NormalizedKickStream,
 } from '../types/kick';
+import { getKickChannelSlugFromPath } from '@/src/dom/slug';
 
 export interface KickViewerCountState {
   streamsBySlug: Map<string, NormalizedKickStream>;
   streamsByLivestreamId: Map<string, NormalizedKickStream>;
   currentViewersByLivestreamId: Map<number, NormalizedCurrentViewerEntry>;
+  currentViewerLivestreamIdsBySlug: Map<string, number>;
   lastCaptureByEndpoint: Map<KickEndpointType, number>;
 }
 
@@ -33,6 +35,7 @@ export function createKickViewerCountState(): KickViewerCountState {
     streamsBySlug: new Map(),
     streamsByLivestreamId: new Map(),
     currentViewersByLivestreamId: new Map(),
+    currentViewerLivestreamIdsBySlug: new Map(),
     lastCaptureByEndpoint: new Map(),
   };
 }
@@ -104,6 +107,15 @@ export function updateCurrentViewerState(
       state.currentViewersByLivestreamId.set(entry.livestreamId, entry);
       updatedLivestreamIds += 1;
     }
+
+    const inferredSlug = inferSingleChannelPageSlugForCurrentViewerEntry(entry);
+
+    if (inferredSlug) {
+      state.currentViewerLivestreamIdsBySlug.set(
+        inferredSlug,
+        entry.livestreamId,
+      );
+    }
   }
 
   return {
@@ -131,9 +143,14 @@ export function getBestStreamBySlug(
   }
 
   const stream = state.streamsBySlug.get(normalizedSlug);
+  const inferredCurrentViewerStream = getFreshCurrentViewerStreamBySlug(
+    state,
+    normalizedSlug,
+    now,
+  );
 
   if (!stream) {
-    return null;
+    return inferredCurrentViewerStream;
   }
 
   const currentViewerEntry = getFreshCurrentViewerEntryForStream(
@@ -158,7 +175,7 @@ export function getBestStreamBySlug(
   }
 
   if (!isStreamFresh(stream, now)) {
-    return null;
+    return inferredCurrentViewerStream;
   }
 
   return stream;
@@ -196,6 +213,36 @@ function getFreshCurrentViewerEntryForStream(
   return currentViewerEntry;
 }
 
+function getFreshCurrentViewerStreamBySlug(
+  state: KickViewerCountState,
+  slug: string,
+  now: number,
+): NormalizedKickStream | null {
+  const livestreamId = state.currentViewerLivestreamIdsBySlug.get(slug);
+
+  if (livestreamId === undefined) {
+    return null;
+  }
+
+  const currentViewerEntry = state.currentViewersByLivestreamId.get(livestreamId);
+
+  if (!currentViewerEntry || !isCurrentViewerEntryFresh(currentViewerEntry, now)) {
+    return null;
+  }
+
+  return {
+    sourceEndpoint: 'CURRENT_VIEWERS',
+    channelSlug: slug,
+    livestreamId: String(currentViewerEntry.livestreamId),
+    viewerCount: currentViewerEntry.viewerCount,
+    showViewCount: currentViewerEntry.showViewCount,
+    isLive: true,
+    capturedAt: currentViewerEntry.capturedAt,
+    requestUrl: currentViewerEntry.requestUrl,
+    pageUrl: currentViewerEntry.pageUrl,
+  };
+}
+
 function isCurrentViewerEntryFresh(
   entry: NormalizedCurrentViewerEntry,
   now: number,
@@ -223,4 +270,54 @@ function normalizeStateSlug(value: string): string | undefined {
   const normalized = value.trim().toLowerCase();
 
   return normalized.length > 0 ? normalized : undefined;
+}
+
+function inferSingleChannelPageSlugForCurrentViewerEntry(
+  entry: NormalizedCurrentViewerEntry,
+): string | undefined {
+  const pageSlug = getChannelSlugFromUrl(entry.pageUrl);
+
+  if (!pageSlug) {
+    return undefined;
+  }
+
+  const requestedIds = readCurrentViewerRequestIds(entry.requestUrl);
+
+  if (requestedIds.length !== 1 || requestedIds[0] !== entry.livestreamId) {
+    return undefined;
+  }
+
+  return pageSlug;
+}
+
+function getChannelSlugFromUrl(rawUrl: string): string | undefined {
+  try {
+    const url = new URL(rawUrl);
+    return getKickChannelSlugFromPath(url.pathname) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function readCurrentViewerRequestIds(rawUrl: string): number[] {
+  try {
+    const url = new URL(rawUrl, 'https://kick.com');
+    const values = [
+      ...url.searchParams.getAll('ids[]'),
+      ...url.searchParams.getAll('ids'),
+    ];
+    const ids = new Set<number>();
+
+    for (const value of values) {
+      const parsed = parseSafeNumericLivestreamId(value);
+
+      if (parsed !== undefined) {
+        ids.add(parsed);
+      }
+    }
+
+    return [...ids];
+  } catch {
+    return [];
+  }
 }

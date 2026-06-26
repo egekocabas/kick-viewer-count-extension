@@ -19,7 +19,7 @@ export interface CaptureMetadata {
 }
 
 export interface NormalizedKickStream {
-  sourceEndpoint: KickStreamEndpointType;
+  sourceEndpoint: KickEndpointType;
   channelSlug: string;
   channelUsername?: string;
   channelId?: number;
