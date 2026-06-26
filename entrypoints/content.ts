@@ -7,6 +7,7 @@ import {
   KICK_ENDPOINT_NORMALIZERS,
   normalizeCapturedKickPayload,
 } from '@/src/kick/normalize';
+import { createBrowsePageViewerFetcher } from '@/src/kick/browse-page-viewer-fetcher';
 import {
   createKickViewerCountState,
   markEndpointCaptured,
@@ -40,9 +41,17 @@ export default defineContentScript({
     window.__kickViewerCountContentScriptInitialized = true;
 
     const state = createKickViewerCountState();
-    const domInjection = createDomInjectionController({ state });
+    const browsePageViewerFetcher = createBrowsePageViewerFetcher();
+    const domInjection = createDomInjectionController({
+      state,
+      onMutation: () => browsePageViewerFetcher.onMutation(),
+      onUrlChange: () => browsePageViewerFetcher.onUrlChange(),
+    });
 
     domInjection.start();
+    browsePageViewerFetcher.init(state, (reason) =>
+      domInjection.scheduleUpdate(reason),
+    );
 
     ctx.addEventListener(window, 'message', (event) => {
       if (event.source !== window || event.origin !== window.location.origin) {

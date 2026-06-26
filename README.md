@@ -1,6 +1,6 @@
 # Kick Viewer Count
 
-Kick Viewer Count is a browser extension for Kick.com that shows viewer counts that are not displayed by the site. It captures data Kick pages already load and injects viewer count indicators on livestream cards, the sidebar, and channel headers where no native count is shown.
+Kick Viewer Count is a browser extension for Kick.com that shows viewer counts that are not displayed by the site. It captures data Kick pages already load and injects viewer count indicators on livestream cards, the sidebar, and channel headers where no native count is shown. On browse and category listing pages, where Kick may server-render cards without client-side listing API traffic, the extension makes same-origin Kick API requests for only the cards missing native counts.
 
 All captured data stays in memory during the page session. The extension does not use an external backend and does not transmit viewer-count data outside the local browser.
 
@@ -48,6 +48,7 @@ Captured responses come from these endpoints:
 - Sidebar livestream recommendations: `https://web.kick.com/api/v1/recommendations/livestreams/sidebar`
 - General livestream recommendations: `https://web.kick.com/api/v1/recommendations/livestreams`
 - Featured livestreams: `https://web.kick.com/api/v1/livestreams/featured`
+- Channel details: `https://kick.com/api/v2/channels/{slug}`
 - Followed channels: `https://kick.com/api/v2/channels/followed`
 - Current viewers: `https://kick.com/current-viewers`
 - User livestreams: `https://kick.com/api/v1/user/livestreams`
@@ -64,7 +65,7 @@ Current DOM injectors target:
 - Sidebar following and recommended channel rows
 - Live channel headers
 
-DOM updates are debounced and run after SPA navigation, DOM mutations, and content script initialization. The extension does not directly call Kick APIs.
+DOM updates are debounced and run after SPA navigation, DOM mutations, and content script initialization. On `/browse` and `/category/*` routes, the content script actively fetches same-origin channel details for missing-count cards and polls `/current-viewers` for the discovered livestream IDs while the user remains on that route.
 
 ## License
 

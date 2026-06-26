@@ -25,6 +25,21 @@ function exactEndpoint(
   };
 }
 
+function channelDetailsEndpoint(): KickEndpointDefinition {
+  return {
+    type: 'CHANNEL_DETAILS',
+    debugName: 'channel details',
+    origin: 'https://kick.com',
+    pathname: '/api/v2/channels/{slug}',
+    matchesUrl(url) {
+      return (
+        url.origin === 'https://kick.com' &&
+        /^\/api\/v2\/channels\/[^/]+$/.test(url.pathname)
+      );
+    },
+  };
+}
+
 export const KICK_ENDPOINT_DEFINITIONS = [
   exactEndpoint(
     'SIDEBAR_LIVESTREAMS',
@@ -50,6 +65,7 @@ export const KICK_ENDPOINT_DEFINITIONS = [
     'https://kick.com',
     '/api/v2/channels/followed',
   ),
+  channelDetailsEndpoint(),
   exactEndpoint(
     'CURRENT_VIEWERS',
     'current viewers',

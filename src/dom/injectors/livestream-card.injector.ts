@@ -6,15 +6,17 @@ import {
   removeViewerCountElements,
   updateViewerCountElement,
 } from '../extension-elements';
+import {
+  findLivestreamCardTarget,
+  LIVESTREAM_CARD_SELECTOR,
+} from '../livestream-card-target';
 import { hasNativeLivestreamCardViewerCount } from '../native-count-detector';
-import { getKickChannelSlugFromHref } from '../slug';
 import {
   getBestStreamBySlug,
   type KickViewerCountState,
 } from '@/src/kick/state';
 
 const TARGET = 'livestream-card';
-const CARD_SELECTOR = '[data-testid="livestream-results-card"]';
 
 export interface InjectorUpdateSummary {
   scanned: number;
@@ -35,10 +37,12 @@ export function updateLivestreamCardViewerCounts(
     skippedNoData: 0,
   };
 
-  for (const card of document.querySelectorAll<HTMLElement>(CARD_SELECTOR)) {
+  for (const card of document.querySelectorAll<HTMLElement>(
+    LIVESTREAM_CARD_SELECTOR,
+  )) {
     summary.scanned += 1;
 
-    const cardTarget = findCardTarget(card);
+    const cardTarget = findLivestreamCardTarget(card);
 
     if (!cardTarget) {
       summary.removed += removeViewerCountElements(card, TARGET);
@@ -95,30 +99,6 @@ export function updateLivestreamCardViewerCounts(
   }
 
   return summary;
-}
-
-function findCardTarget(
-  card: HTMLElement,
-): { slug: string; anchor: HTMLAnchorElement } | null {
-  let fallback: { slug: string; anchor: HTMLAnchorElement } | null = null;
-
-  for (const anchor of card.querySelectorAll<HTMLAnchorElement>('a[href]')) {
-    const slug = getKickChannelSlugFromHref(anchor.getAttribute('href'));
-
-    if (!slug) {
-      continue;
-    }
-
-    const target = { slug, anchor };
-
-    if (anchor.querySelector('img, picture, video')) {
-      return target;
-    }
-
-    fallback ??= target;
-  }
-
-  return fallback;
 }
 
 function ensurePositionedContainer(element: HTMLElement): void {

@@ -25,6 +25,8 @@ export interface DomInjectionController {
 interface DomInjectionControllerOptions {
   state: KickViewerCountState;
   debounceMs?: number;
+  onMutation?: () => void;
+  onUrlChange?: () => void;
 }
 
 declare global {
@@ -98,6 +100,7 @@ export function createDomInjectionController(
 
   function handleUrlChange(): void {
     scheduleUpdate('url-change');
+    options.onUrlChange?.();
   }
 
   function installMutationObserverWhenReady(): void {
@@ -109,6 +112,7 @@ export function createDomInjectionController(
       for (const mutation of mutations) {
         if (!isExtensionOwnedMutation(mutation) && !isExcludedSubtreeMutation(mutation)) {
           scheduleUpdate('mutation');
+          options.onMutation?.();
           return;
         }
       }

@@ -5,6 +5,7 @@ export type KickEndpointType =
   | 'SIDEBAR_LIVESTREAMS'
   | 'RECOMMENDED_LIVESTREAMS'
   | 'FEATURED_LIVESTREAMS'
+  | 'CHANNEL_DETAILS'
   | 'FOLLOWED_CHANNELS'
   | 'CURRENT_VIEWERS'
   | 'USER_LIVESTREAMS';
@@ -79,6 +80,7 @@ export function isKickEndpointType(value: unknown): value is KickEndpointType {
     value === 'SIDEBAR_LIVESTREAMS' ||
     value === 'RECOMMENDED_LIVESTREAMS' ||
     value === 'FEATURED_LIVESTREAMS' ||
+    value === 'CHANNEL_DETAILS' ||
     value === 'FOLLOWED_CHANNELS' ||
     value === 'CURRENT_VIEWERS' ||
     value === 'USER_LIVESTREAMS'

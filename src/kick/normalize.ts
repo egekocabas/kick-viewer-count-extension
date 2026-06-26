@@ -40,6 +40,10 @@ export const KICK_ENDPOINT_NORMALIZERS: Record<KickEndpointType, EndpointNormali
     'FEATURED_LIVESTREAMS',
     normalizeRecommendationLivestreamsFromDataLivestreams,
   ),
+  CHANNEL_DETAILS: createStreamNormalizer(
+    'CHANNEL_DETAILS',
+    normalizeChannelDetails,
+  ),
   FOLLOWED_CHANNELS: createStreamNormalizer(
     'FOLLOWED_CHANNELS',
     normalizeFollowedChannels,
@@ -115,6 +119,15 @@ export function normalizeUserLivestreams(
   return payload
     .map((item) => normalizeUserLivestream(item, metadata))
     .filter((entry): entry is NormalizedKickStream => entry !== undefined);
+}
+
+export function normalizeChannelDetails(
+  payload: unknown,
+  metadata: StreamCaptureMetadata,
+): NormalizedKickStream[] {
+  const stream = normalizeChannelDetailsPayload(payload, metadata);
+
+  return stream ? [stream] : [];
 }
 
 export function normalizeCurrentViewers(
@@ -267,6 +280,72 @@ function normalizeUserLivestream(
   assignIfPresent(stream, 'categorySlug', category.slug);
   assignIfPresent(stream, 'thumbnailUrl', thumbnail);
   assignIfPresent(stream, 'startTime', readNonEmptyString(value.start_time));
+
+  return stream;
+}
+
+function normalizeChannelDetailsPayload(
+  value: unknown,
+  metadata: StreamCaptureMetadata,
+): NormalizedKickStream | undefined {
+  if (!isRecord(value) || !isRecord(value.livestream)) {
+    return undefined;
+  }
+
+  const livestream = value.livestream;
+  const livestreamChannel = isRecord(livestream.channel)
+    ? livestream.channel
+    : undefined;
+  const channelSlug =
+    readNonEmptyString(value.slug)?.toLowerCase() ??
+    readNonEmptyString(livestreamChannel?.slug)?.toLowerCase();
+  const viewerCount =
+    readFiniteNumber(livestream.viewer_count) ??
+    readFiniteNumber(livestream.viewers);
+  const isLive = readBoolean(livestream.is_live ?? value.is_live, true);
+
+  if (!channelSlug || viewerCount === undefined || !isLive) {
+    return undefined;
+  }
+
+  const category = readCategory(livestream.category);
+  const fallbackCategory = readFirstCategory(livestream.categories);
+  const thumbnail = isRecord(livestream.thumbnail)
+    ? readNonEmptyString(livestream.thumbnail.src)
+    : undefined;
+  const user = isRecord(value.user) ? value.user : undefined;
+  const stream = createBaseStream(metadata, channelSlug, viewerCount, {
+    showViewCount: readBoolean(
+      livestream.show_view_count ?? value.show_view_count,
+      true,
+    ),
+    isLive: true,
+  });
+
+  assignIfPresent(
+    stream,
+    'channelUsername',
+    readNonEmptyString(value.username) ??
+      readNonEmptyString(user?.username) ??
+      readNonEmptyString(livestreamChannel?.username),
+  );
+  assignIfPresent(
+    stream,
+    'channelId',
+    readFiniteNumber(value.id) ?? readFiniteNumber(livestream.channel_id),
+  );
+  assignIfPresent(stream, 'livestreamId', readIdString(livestream.id));
+  assignIfPresent(stream, 'chatroomId', readIdString(livestream.chatroom_id));
+  assignIfPresent(
+    stream,
+    'title',
+    readNonEmptyString(livestream.session_title) ??
+      readNonEmptyString(livestream.title),
+  );
+  assignIfPresent(stream, 'categoryName', category.name ?? fallbackCategory.name);
+  assignIfPresent(stream, 'categorySlug', category.slug ?? fallbackCategory.slug);
+  assignIfPresent(stream, 'thumbnailUrl', thumbnail);
+  assignIfPresent(stream, 'startTime', readNonEmptyString(livestream.start_time));
 
   return stream;
 }
