@@ -6,7 +6,10 @@ import {
   removeViewerCountElements,
   updateViewerCountElement,
 } from '../extension-elements';
-import { hasNativeChannelHeaderViewerCount } from '../native-count-detector';
+import {
+  hasNativeChannelHeaderViewerCount,
+  hasNativeChannelPageViewerCount,
+} from '../native-count-detector';
 import { getCurrentKickChannelSlug } from '../slug';
 import {
   getBestStreamBySlug,
@@ -59,7 +62,10 @@ export function updateChannelHeaderViewerCount(
   );
   const headerRoot = findHeaderRoot(usernameElement, livestreamTitle);
 
-  if (headerRoot && hasNativeChannelHeaderViewerCount(headerRoot)) {
+  if (
+    hasNativeChannelPageViewerCount() ||
+    (headerRoot && hasNativeChannelHeaderViewerCount(headerRoot))
+  ) {
     summary.removed += removeExisting(existing);
     summary.skippedNative += 1;
     return summary;
@@ -103,21 +109,39 @@ function findHeaderRoot(
 ): HTMLElement | null {
   if (livestreamTitle) {
     let current = livestreamTitle.parentElement;
+    let fallback: HTMLElement | null = null;
     let depth = 0;
 
-    while (current && current !== document.body && depth < 6) {
+    while (current && current !== document.body && depth < 10) {
       if (current.contains(usernameElement)) {
-        return current;
+        fallback ??= current;
+
+        if (looksLikeFullChannelHeader(current)) {
+          return current;
+        }
       }
 
       current = current.parentElement;
       depth += 1;
     }
 
-    return livestreamTitle.parentElement;
+    return fallback ?? livestreamTitle.parentElement;
   }
 
   return usernameElement.parentElement?.parentElement ?? usernameElement.parentElement;
+}
+
+function looksLikeFullChannelHeader(element: HTMLElement): boolean {
+  return Boolean(
+    element.querySelector(
+      [
+        '[data-testid="viewer-count"]',
+        '[data-testid="follow-button"]',
+        '[data-testid="sub-button"]',
+        '[data-testid="gift-sub-button"]',
+      ].join(', '),
+    ),
+  );
 }
 
 function insertAfter(anchor: HTMLElement, element: HTMLElement): void {

@@ -4,6 +4,7 @@ const VIEWER_WORD_PATTERN =
   /\b(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?\s*[km]?\s*(?:watching|viewers?)\b/i;
 const COMPACT_VIEWER_COUNT_PATTERN =
   /^(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?\s*[km]?$/i;
+const CHANNEL_PAGE_VIEWER_COUNT_SELECTOR = '[data-testid="viewer-count"]';
 
 export function hasNativeLivestreamCardViewerCount(
   card: HTMLElement,
@@ -31,6 +32,10 @@ export function hasNativeSidebarViewerCount(statusRoot: HTMLElement): boolean {
 export function hasNativeChannelHeaderViewerCount(
   headerRoot: HTMLElement,
 ): boolean {
+  if (hasNativeChannelPageViewerCount(headerRoot)) {
+    return true;
+  }
+
   if (VIEWER_WORD_PATTERN.test(getVisibleText(headerRoot))) {
     return true;
   }
@@ -50,6 +55,14 @@ export function hasNativeChannelHeaderViewerCount(
 
     return VIEWER_WORD_PATTERN.test(`${ariaLabel} ${title}`);
   });
+}
+
+export function hasNativeChannelPageViewerCount(
+  root: ParentNode = document,
+): boolean {
+  return Array.from(
+    root.querySelectorAll<HTMLElement>(CHANNEL_PAGE_VIEWER_COUNT_SELECTOR),
+  ).some((element) => !shouldIgnoreElement(element));
 }
 
 export function getVisibleText(root: Node): string {
