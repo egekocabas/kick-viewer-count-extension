@@ -1,6 +1,8 @@
 import { formatViewerCount } from './format-viewer-count';
 import { logger } from '@/src/utils/devLogger';
 
+const KVC_ICON_SVG = `<svg width="14" height="14" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;margin-right:3px"><path d="M20 64 C38 31 90 31 108 64 C90 97 38 97 20 64 Z" fill="#53FC18"/><circle cx="64" cy="64" r="13" fill="#0E0F12"/></svg>`;
+
 export type ViewerCountTarget =
   | 'livestream-card'
   | 'sidebar-channel'
@@ -146,7 +148,8 @@ export function updateViewerCountElement(
     'aria-label',
     `${ariaViewerCount} viewers, added by Kick Viewer Count`,
   );
-  element.textContent = options.text;
+  const icon = options.target !== 'sidebar-channel' ? KVC_ICON_SVG : '';
+  element.innerHTML = `${icon}<span>${options.text}</span>`;
 
   return true;
 }
