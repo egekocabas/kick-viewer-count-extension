@@ -79,8 +79,8 @@ jobs:
       FIREFOX_CHANNEL: ${{ secrets.FIREFOX_CHANNEL }}
       EDGE_PRODUCT_ID: ${{ secrets.EDGE_PRODUCT_ID }}
       EDGE_CLIENT_ID: ${{ secrets.EDGE_CLIENT_ID }}
-      EDGE_CLIENT_SECRET: ${{ secrets.EDGE_CLIENT_SECRET }}
-      EDGE_ACCESS_TOKEN_URL: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+      EDGE_API_KEY: ${{ secrets.EDGE_API_KEY }}
+      EDGE_SKIP_SUBMIT_REVIEW: ${{ secrets.EDGE_SKIP_SUBMIT_REVIEW }}
     steps:
       # https://github.com/actions/checkout/releases/tag/v7.0.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
