@@ -1,4 +1,17 @@
-# Kick Viewer Count
+<div align="center">
+  <img src="store-assets/icons/icon.svg" alt="Kick Viewer Count icon" width="128" height="128">
+  <h1>Kick Viewer Count</h1>
+  <p>A browser extension that reveals hidden viewer counts on Kick.com.</p>
+</div>
+
+---
+
+<div align="center">
+  <img src="store-assets/screenshots/browse.png" alt="Viewer counts on browse page" width="49%">
+  <img src="store-assets/screenshots/channel.png" alt="Viewer count on channel page" width="49%">
+</div>
+
+---
 
 Kick Viewer Count is a browser extension for Kick.com that shows viewer counts that are not displayed by the site. It captures data Kick pages already load and injects viewer count indicators on livestream cards, the sidebar, and channel headers where no native count is shown. On browse and category listing pages, where Kick may server-render cards without client-side listing API traffic, the extension makes same-origin Kick API requests for only the cards missing native counts.
 
