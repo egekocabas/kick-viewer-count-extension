@@ -2,6 +2,28 @@
   <img src="store-assets/icons/icon.svg" alt="Kick Viewer Count icon" width="128" height="128">
   <h1>Kick Viewer Count</h1>
   <p>A browser extension that reveals hidden viewer counts on Kick.com.</p>
+
+  <a href="https://chromewebstore.google.com/detail/kick-viewer-count/dnklmheigdhehllkoeafalakgajjiemp">
+    <img src="https://img.shields.io/badge/Chrome_Web_Store-Available-4285F4?logo=googlechrome&logoColor=white&style=for-the-badge" alt="Available in Chrome Web Store">
+  </a>
+
+  <br>
+
+  [![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/dnklmheigdhehllkoeafalakgajjiemp?label=chrome)](https://chromewebstore.google.com/detail/kick-viewer-count/dnklmheigdhehllkoeafalakgajjiemp)
+  [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/dnklmheigdhehllkoeafalakgajjiemp)](https://chromewebstore.google.com/detail/kick-viewer-count/dnklmheigdhehllkoeafalakgajjiemp)
+  [![Chrome Web Store Rating](https://img.shields.io/chrome-web-store/rating/dnklmheigdhehllkoeafalakgajjiemp)](https://chromewebstore.google.com/detail/kick-viewer-count/dnklmheigdhehllkoeafalakgajjiemp)
+
+  <br>
+
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/">
+    <img src="https://img.shields.io/badge/Firefox_Add--ons-Available-FF7139?logo=firefox&logoColor=white&style=for-the-badge" alt="Available on Firefox Add-ons">
+  </a>
+
+  <br>
+
+  [![Firefox Add-on Version](https://img.shields.io/amo/v/kick-viewer-count?label=firefox)](https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/)
+  [![Firefox Add-on Users](https://img.shields.io/amo/users/kick-viewer-count)](https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/)
+  [![Firefox Add-on Rating](https://img.shields.io/amo/rating/kick-viewer-count?label=rating)](https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/)
 </div>
 
 ---
