@@ -40,8 +40,8 @@
     "typescript"
   ],
   "devDependencies": {
-    "@eslint/js": "9.39.4",
-    "eslint": "9.39.4",
+    "@eslint/js": "10.0.1",
+    "eslint": "10.5.0",
     "globals": "17.7.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.62.0",
