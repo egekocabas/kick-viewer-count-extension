@@ -17,7 +17,7 @@ import { logger } from '@/src/utils/devLogger';
 const CHANNEL_FETCH_CONCURRENCY = 5;
 const CURRENT_VIEWERS_BATCH_SIZE = 50;
 const POLL_INTERVAL_MS = 2 * 60 * 1000;
-const MUTATION_DEBOUNCE_MS = 1000;
+const MUTATION_DEBOUNCE_MS = 500;
 const RETRY_COOLDOWN_MS = 60 * 1000;
 
 type ScheduleDomUpdate = (reason: DomUpdateReason) => void;
@@ -267,7 +267,7 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
       });
 
       if (!response.ok) {
-        throw new Error(`Channel details request failed with ${response.status}.`);
+        throw new Error(formatHttpError(response));
       }
 
       const payload: unknown = await response.json();
@@ -289,10 +289,9 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
     } catch (error) {
       if (!isAbortError(error)) {
         setRetryCooldown(slug);
-        logger.warn('Failed to fetch channel details for browse/category card.', {
-          slug,
-          error,
-        });
+        logger.warn(
+          `Failed to fetch channel details for browse/category card "${slug}": ${formatError(error)}`,
+        );
       }
 
       return undefined;
@@ -351,7 +350,7 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
         });
 
         if (!response.ok) {
-          throw new Error(`Current viewers request failed with ${response.status}.`);
+          throw new Error(formatHttpError(response));
         }
 
         const payload: unknown = await response.json();
@@ -365,10 +364,9 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
         );
       } catch (error) {
         if (!isAbortError(error)) {
-          logger.warn('Failed to poll browse/category current viewers.', {
-            livestreamIds: batch,
-            error,
-          });
+          logger.warn(
+            `Failed to poll browse/category current viewers for livestream IDs ${batch.join(',')}: ${formatError(error)}`,
+          );
         }
       }
     }
@@ -467,4 +465,18 @@ function chunkArray<T>(items: T[], size: number): T[][] {
 
 function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === 'AbortError';
+}
+
+function formatHttpError(response: Response): string {
+  const statusText = response.statusText ? ` ${response.statusText}` : '';
+
+  return `HTTP ${response.status}${statusText}`;
+}
+
+function formatError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
 }

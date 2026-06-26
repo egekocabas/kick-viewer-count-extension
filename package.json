@@ -1,8 +1,9 @@
 {
   "name": "kick-viewer-count-extension",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A browser extension that shows hidden viewer counts on Kick.com.",
   "type": "module",
+  "author": "egekocabas",
   "license": "MIT",
   "repository": {
     "type": "git",
