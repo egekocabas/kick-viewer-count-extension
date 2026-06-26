@@ -163,6 +163,15 @@ function installSpaNavigationObserver(): void {
       window.dispatchEvent(new Event(URL_CHANGE_EVENT));
     }, 0);
   });
+
+  // Support the Navigation API (Chrome 102+), used by some SPA routers for
+  // navigations that bypass history.pushState — e.g. Kick's PiP-mode Browse.
+  const nav = (window as Window & { navigation?: EventTarget }).navigation;
+  if (nav) {
+    nav.addEventListener('navigatesuccess', () => {
+      window.dispatchEvent(new Event(URL_CHANGE_EVENT));
+    });
+  }
 }
 
 function dispatchUrlChangeIfNeeded(previousUrl: string): void {

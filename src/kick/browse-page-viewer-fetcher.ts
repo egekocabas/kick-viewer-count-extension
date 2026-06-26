@@ -15,7 +15,7 @@ import type { NormalizedCurrentViewerEntry, NormalizedKickStream } from '@/src/t
 import { logger } from '@/src/utils/devLogger';
 
 const CHANNEL_FETCH_CONCURRENCY = 5;
-const CURRENT_VIEWERS_BATCH_SIZE = 50;
+const CURRENT_VIEWERS_BATCH_SIZE = 10;
 const POLL_INTERVAL_MS = 2 * 60 * 1000;
 const MUTATION_DEBOUNCE_MS = 500;
 const RETRY_COOLDOWN_MS = 60 * 1000;
@@ -338,6 +338,7 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
       }
 
       const requestUrl = createCurrentViewersUrl(batch);
+      const sessionToken = readSessionToken();
 
       try {
         const response = await fetch(requestUrl, {
@@ -345,6 +346,7 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
           headers: {
             accept: 'application/json',
             'x-app-platform': 'web',
+            ...(sessionToken ? { authorization: `Bearer ${sessionToken}` } : {}),
           },
           signal: sessionAbortController?.signal,
         });
@@ -441,6 +443,20 @@ function createCurrentViewersUrl(livestreamIds: number[]): URL {
   }
 
   return url;
+}
+
+function readSessionToken(): string | undefined {
+  const match = document.cookie.match(/(?:^|;\s*)session_token=([^;]*)/);
+
+  if (!match || match[1] === undefined) {
+    return undefined;
+  }
+
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return undefined;
+  }
 }
 
 function parseNumericLivestreamId(value: string | undefined): number | undefined {

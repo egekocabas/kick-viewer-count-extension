@@ -18,6 +18,19 @@ import {
 
 const TARGET = 'channel-header';
 
+function findShareRow(): HTMLElement | null {
+  const subButton = document.querySelector<HTMLElement>('[data-testid="sub-button"]');
+  const buttonsRow = subButton?.parentElement;
+  const container = buttonsRow?.parentElement;
+  const shareRow = container?.lastElementChild;
+
+  if (shareRow instanceof HTMLElement && shareRow !== buttonsRow) {
+    return shareRow;
+  }
+
+  return null;
+}
+
 export interface ChannelHeaderInjectorUpdateSummary {
   scanned: number;
   updated: number;
@@ -161,19 +174,6 @@ function insertAfter(anchor: HTMLElement, element: HTMLElement): void {
   if (element.parentElement !== parent || element.previousElementSibling !== anchor) {
     parent.insertBefore(element, anchor.nextSibling);
   }
-}
-
-function findShareRow(): HTMLElement | null {
-  const subButton = document.querySelector<HTMLElement>('[data-testid="sub-button"]');
-  const buttonsRow = subButton?.parentElement;
-  const container = buttonsRow?.parentElement;
-  const shareRow = container?.lastElementChild;
-
-  if (shareRow instanceof HTMLElement && shareRow !== buttonsRow) {
-    return shareRow;
-  }
-
-  return null;
 }
 
 function removeExisting(element: HTMLElement | null): number {
