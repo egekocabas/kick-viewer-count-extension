@@ -27,6 +27,7 @@ interface DomInjectionControllerOptions {
   debounceMs?: number;
   onMutation?: () => void;
   onUrlChange?: () => void;
+  isSlugInFlight?: (slug: string) => boolean;
 }
 
 declare global {
@@ -80,7 +81,7 @@ export function createDomInjectionController(
     updateTimer = undefined;
     ensureDomInjectionStyles();
 
-    const cardSummary = updateLivestreamCardViewerCounts(options.state);
+    const cardSummary = updateLivestreamCardViewerCounts(options.state, options.isSlugInFlight);
     const sidebarSummary = updateSidebarChannelViewerCounts(options.state);
     const channelHeaderSummary = updateChannelHeaderViewerCount(options.state);
 

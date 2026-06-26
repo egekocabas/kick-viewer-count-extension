@@ -31,6 +31,7 @@ export interface BrowsePageViewerFetcher {
   init(state: KickViewerCountState, scheduleUpdate: ScheduleDomUpdate): void;
   onUrlChange(): void;
   onMutation(): void;
+  isSlugInFlight(slug: string): boolean;
 }
 
 export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
@@ -196,6 +197,8 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
     if (slugsToFetch.length === 0) {
       return;
     }
+
+    deps.scheduleUpdate('network-data');
 
     logger.info('Fetching missing browse/category viewer counts.', {
       reason,
@@ -422,10 +425,15 @@ export function createBrowsePageViewerFetcher(): BrowsePageViewerFetcher {
     return isActive && sessionId === activeSessionId;
   }
 
+  function isSlugInFlight(slug: string): boolean {
+    return inFlightSlugs.has(slug);
+  }
+
   return {
     init,
     onUrlChange,
     onMutation,
+    isSlugInFlight,
   };
 }
 

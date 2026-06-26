@@ -46,6 +46,7 @@ export default defineContentScript({
       state,
       onMutation: () => browsePageViewerFetcher.onMutation(),
       onUrlChange: () => browsePageViewerFetcher.onUrlChange(),
+      isSlugInFlight: (slug) => browsePageViewerFetcher.isSlugInFlight(slug),
     });
 
     domInjection.start();

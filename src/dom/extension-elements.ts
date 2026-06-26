@@ -82,6 +82,20 @@ export function ensureDomInjectionStyles(): void {
       font-weight: 700;
       letter-spacing: 0;
     }
+
+    @keyframes kvc-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .kvc-spinner-ring {
+      display: block;
+      width: 10px;
+      height: 10px;
+      border: 2px solid rgba(83, 252, 24, 0.25);
+      border-top-color: #53FC18;
+      border-radius: 50%;
+      animation: kvc-spin 0.75s linear infinite;
+    }
   `;
 
   (document.head ?? document.documentElement).append(style);
@@ -123,17 +137,45 @@ export function removeViewerCountElements(
   return removed;
 }
 
+export function ensureSpinnerElement(
+  anchor: HTMLElement,
+  target: ViewerCountTarget,
+): HTMLElement {
+  const existing = findViewerCountElement(anchor, target);
+
+  if (existing?.dataset.kvcLoading === 'true') {
+    return existing;
+  }
+
+  if (existing) {
+    return existing;
+  }
+
+  const element = createViewerCountElement('span');
+  element.dataset.kvcViewerCount = 'true';
+  element.dataset.kvcTarget = target;
+  element.dataset.kvcLoading = 'true';
+  element.className = 'kvc-viewer-count kvc-card-count kvc-card-spinner';
+  element.title = 'Added by Kick Viewer Count';
+  element.setAttribute('aria-label', 'Loading viewer count, added by Kick Viewer Count');
+  element.innerHTML = '<span class="kvc-spinner-ring" aria-hidden="true"></span>';
+  return element;
+}
+
 export function updateViewerCountElement(
   element: HTMLElement,
   options: ViewerCountElementOptions,
 ): boolean {
   if (
+    element.dataset.kvcLoading !== 'true' &&
     element.dataset.kvcTarget === options.target &&
     element.dataset.kvcSlug === options.slug &&
     element.dataset.kvcCount === String(options.viewerCount)
   ) {
     return false;
   }
+
+  delete element.dataset.kvcLoading;
 
   const ariaViewerCount = options.viewerCount.toLocaleString();
 

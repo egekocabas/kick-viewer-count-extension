@@ -1,5 +1,6 @@
 import {
   createViewerCountElement,
+  ensureSpinnerElement,
   findViewerCountElement,
   formatViewerCountLabel,
   logViewerCountDomUpdate,
@@ -28,6 +29,7 @@ export interface InjectorUpdateSummary {
 
 export function updateLivestreamCardViewerCounts(
   state: KickViewerCountState,
+  isSlugInFlight?: (slug: string) => boolean,
 ): InjectorUpdateSummary {
   const summary: InjectorUpdateSummary = {
     scanned: 0,
@@ -52,8 +54,16 @@ export function updateLivestreamCardViewerCounts(
     const stream = getBestStreamBySlug(state, cardTarget.slug);
 
     if (!stream) {
-      summary.removed += removeViewerCountElements(card, TARGET);
-      summary.skippedNoData += 1;
+      if (isSlugInFlight?.(cardTarget.slug)) {
+        ensurePositionedContainer(cardTarget.anchor);
+        const spinnerEl = ensureSpinnerElement(cardTarget.anchor, TARGET);
+        if (spinnerEl.parentElement !== cardTarget.anchor) {
+          cardTarget.anchor.append(spinnerEl);
+        }
+      } else {
+        summary.removed += removeViewerCountElements(card, TARGET);
+        summary.skippedNoData += 1;
+      }
       continue;
     }
 
