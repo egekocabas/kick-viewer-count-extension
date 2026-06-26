@@ -1,7 +1,30 @@
 import { formatViewerCount } from './format-viewer-count';
 import { logger } from '@/src/utils/devLogger';
 
-const KVC_ICON_SVG = `<svg width="14" height="14" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;margin-right:3px"><path d="M20 64 C38 31 90 31 108 64 C90 97 38 97 20 64 Z" fill="#53FC18"/><circle cx="64" cy="64" r="13" fill="#0E0F12"/></svg>`;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function createKvcIconSvg(): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('viewBox', '0 0 128 128');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.style.cssText = 'flex-shrink:0;margin-right:3px';
+
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', 'M20 64 C38 31 90 31 108 64 C90 97 38 97 20 64 Z');
+  path.setAttribute('fill', '#53FC18');
+
+  const circle = document.createElementNS(SVG_NS, 'circle');
+  circle.setAttribute('cx', '64');
+  circle.setAttribute('cy', '64');
+  circle.setAttribute('r', '13');
+  circle.setAttribute('fill', '#0E0F12');
+
+  svg.appendChild(path);
+  svg.appendChild(circle);
+  return svg;
+}
 
 export type ViewerCountTarget =
   | 'livestream-card'
@@ -158,7 +181,10 @@ export function ensureSpinnerElement(
   element.className = 'kvc-viewer-count kvc-card-count kvc-card-spinner';
   element.title = 'Added by Kick Viewer Count';
   element.setAttribute('aria-label', 'Loading viewer count, added by Kick Viewer Count');
-  element.innerHTML = '<span class="kvc-spinner-ring" aria-hidden="true"></span>';
+  const ring = document.createElement('span');
+  ring.className = 'kvc-spinner-ring';
+  ring.setAttribute('aria-hidden', 'true');
+  element.appendChild(ring);
   return element;
 }
 
@@ -189,8 +215,13 @@ export function updateViewerCountElement(
     'aria-label',
     `${ariaViewerCount} viewers, added by Kick Viewer Count`,
   );
-  const icon = options.target !== 'sidebar-channel' ? KVC_ICON_SVG : '';
-  element.innerHTML = `${icon}<span>${options.text}</span>`;
+  element.replaceChildren();
+  if (options.target !== 'sidebar-channel') {
+    element.appendChild(createKvcIconSvg());
+  }
+  const textSpan = document.createElement('span');
+  textSpan.textContent = options.text;
+  element.appendChild(textSpan);
 
   return true;
 }
