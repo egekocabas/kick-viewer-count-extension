@@ -26,6 +26,7 @@ jobs:
         run: |
           npm run zip:chrome
           npm run zip:firefox
+          npm run zip:edge
 
       - name: Verify versions match
         run: |
@@ -33,13 +34,15 @@ jobs:
           CHROME_VERSION=$(ls .output/*-chrome.zip | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
           FIREFOX_VERSION=$(ls .output/*-firefox.zip | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
           SOURCES_VERSION=$(ls .output/*-sources.zip | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
+          EDGE_VERSION=$(ls .output/*-edge.zip | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
 
           echo "::notice::package.json : $PKG_VERSION"
           echo "::notice::chrome zip   : $CHROME_VERSION"
           echo "::notice::firefox zip  : $FIREFOX_VERSION"
           echo "::notice::sources zip  : $SOURCES_VERSION"
+          echo "::notice::edge zip     : $EDGE_VERSION"
 
-          if [ "$PKG_VERSION" != "$CHROME_VERSION" ] || [ "$PKG_VERSION" != "$FIREFOX_VERSION" ] || [ "$PKG_VERSION" != "$SOURCES_VERSION" ]; then
+          if [ "$PKG_VERSION" != "$CHROME_VERSION" ] || [ "$PKG_VERSION" != "$FIREFOX_VERSION" ] || [ "$PKG_VERSION" != "$SOURCES_VERSION" ] || [ "$PKG_VERSION" != "$EDGE_VERSION" ]; then
             echo "::error::Version mismatch detected, aborting!"
             exit 1
           fi
@@ -74,6 +77,10 @@ jobs:
       FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
       FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
       FIREFOX_CHANNEL: ${{ secrets.FIREFOX_CHANNEL }}
+      EDGE_PRODUCT_ID: ${{ secrets.EDGE_PRODUCT_ID }}
+      EDGE_CLIENT_ID: ${{ secrets.EDGE_CLIENT_ID }}
+      EDGE_CLIENT_SECRET: ${{ secrets.EDGE_CLIENT_SECRET }}
+      EDGE_ACCESS_TOKEN_URL: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
     steps:
       # https://github.com/actions/checkout/releases/tag/v7.0.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -85,8 +92,8 @@ jobs:
           name: extension-zips
           path: .output
 
-      - name: Dry run — validate credentials for both stores
+      - name: Dry run — validate credentials for all stores
         run: npm run submit:dry-run
 
-      - name: Submit to Chrome Web Store and Firefox Add-ons
+      - name: Submit to Chrome Web Store, Firefox Add-ons, and Edge Add-ons
         run: npm run submit:publish

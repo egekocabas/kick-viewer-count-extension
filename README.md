@@ -24,6 +24,16 @@
   [![Firefox Add-on Version](https://img.shields.io/amo/v/kick-viewer-count?label=firefox)](https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/)
   [![Firefox Add-on Users](https://img.shields.io/amo/users/kick-viewer-count)](https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/)
   [![Firefox Add-on Rating](https://img.shields.io/amo/rating/kick-viewer-count?label=rating)](https://addons.mozilla.org/en-US/firefox/addon/kick-viewer-count/)
+
+  <br>
+
+  <a href="https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count">
+    <img src="https://img.shields.io/badge/Edge_Add--ons-Available-0078D4?logo=microsoftedge&logoColor=white&style=for-the-badge" alt="Available on Microsoft Edge Add-ons">
+  </a>
+
+  <br>
+
+  [![Edge Add-on Version](https://img.shields.io/badge/dynamic/json?label=edge&query=$.version&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/kick-viewer-count)](https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count)
 </div>
 
 ---
@@ -43,6 +53,7 @@ Supported target browsers:
 
 - Google Chrome
 - Mozilla Firefox
+- Microsoft Edge
 
 ## Local Development
 
@@ -58,6 +69,7 @@ Browser-specific development commands are also available:
 ```sh
 npm run dev:chrome
 npm run dev:firefox
+npm run dev:edge
 ```
 
 ## Assets
