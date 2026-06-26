@@ -74,7 +74,7 @@ export function updateChannelHeaderViewerCount(
   const anchor = livestreamTitle ?? usernameElement;
   const element = existing ?? createViewerCountElement('span');
 
-  const text = `${formatViewerCountLabel(stream.viewerCount)} viewers`;
+  const text = formatViewerCountLabel(stream.viewerCount);
 
   const changed = updateViewerCountElement(element, {
     target: TARGET,
