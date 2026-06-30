@@ -1,3 +1,7 @@
+export function formatViewerCountFull(viewerCount: number): string {
+  return Math.max(0, Math.floor(viewerCount)).toLocaleString();
+}
+
 export function formatViewerCount(viewerCount: number): string {
   const safeCount = Math.max(0, Math.floor(viewerCount));
 

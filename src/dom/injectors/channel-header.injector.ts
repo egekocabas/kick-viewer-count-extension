@@ -1,11 +1,11 @@
 import {
   createViewerCountElement,
   findViewerCountElement,
-  formatViewerCountLabel,
   logViewerCountDomUpdate,
   removeViewerCountElements,
   updateViewerCountElement,
 } from '../extension-elements';
+import { formatViewerCountFull } from '../format-viewer-count';
 import {
   hasNativeChannelHeaderViewerCount,
   hasNativeChannelPageViewerCount,
@@ -86,7 +86,7 @@ export function updateChannelHeaderViewerCount(
 
   const element = existing ?? createViewerCountElement('span');
 
-  const text = formatViewerCountLabel(stream.viewerCount);
+  const text = formatViewerCountFull(stream.viewerCount);
 
   const changed = updateViewerCountElement(element, {
     target: TARGET,
