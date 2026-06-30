@@ -58,8 +58,15 @@ export function updateSidebarChannelViewerCounts(
     const stream = getBestStreamBySlug(state, slug);
 
     if (!stream) {
-      summary.removed += removeViewerCountElements(row, TARGET);
-      summary.skippedNoData += 1;
+      // Keep any existing count element rather than removing it: state may be
+      // temporarily stale (e.g. Kick cached the sidebar API and didn't refetch
+      // after navigation) while the channel is still live. Removing and then
+      // re-adding on the next capture causes a visible flicker. Channels that
+      // go offline lose their Kick sidebar row entirely, so stale elements
+      // never linger on rows that shouldn't have them.
+      if (!findViewerCountElement(row, TARGET)) {
+        summary.skippedNoData += 1;
+      }
       continue;
     }
 
