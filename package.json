@@ -37,6 +37,9 @@
     "submit:dry-run:firefox": "npx wxt submit --dry-run --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip",
     "submit:dry-run:edge": "npx wxt submit --dry-run --edge-zip .output/*-edge.zip",
     "submit:publish": "npx wxt submit --chrome-zip .output/*-chrome.zip --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip --edge-zip .output/*-edge.zip",
+    "submit:publish:chrome": "npx wxt submit --chrome-zip .output/*-chrome.zip",
+    "submit:publish:firefox": "npx wxt submit --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip",
+    "submit:publish:edge": "npx wxt submit --edge-zip .output/*-edge.zip",
     "lint": "wxt prepare && eslint .",
     "lint:fix": "wxt prepare && eslint . --fix",
     "typecheck": "wxt prepare && tsc --noEmit"
