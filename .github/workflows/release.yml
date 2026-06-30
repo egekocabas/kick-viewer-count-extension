@@ -63,6 +63,7 @@ jobs:
           name: extension-zips
           path: .output/*.zip
           retention-days: 1
+          include-hidden-files: true
 
   submit:
     needs: build
