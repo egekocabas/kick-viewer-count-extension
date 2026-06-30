@@ -16,6 +16,7 @@ import {
   getBestStreamBySlug,
   type KickViewerCountState,
 } from '@/src/kick/state';
+import { normalizeKickChannelSlug } from '../slug';
 
 const TARGET = 'livestream-card';
 
@@ -38,6 +39,17 @@ export function updateLivestreamCardViewerCounts(
     skippedNative: 0,
     skippedNoData: 0,
   };
+
+  // Channel pages (/channelSlug, /channelSlug/videos, /channelSlug/clips, etc.) also render cards
+  // with data-testid="livestream-results-card" for past videos and clips. Those
+  // cards contain an avatar link (<a href="/channelSlug">) with an image inside, which
+  // findLivestreamCardTarget would mistake for the stream thumbnail and inject
+  // the live viewer count onto every past video/clip card. Skip the injector
+  // entirely on any URL whose first path segment is a valid channel slug.
+  const [firstSegment = ''] = window.location.pathname.split('/').filter(Boolean);
+  if (normalizeKickChannelSlug(firstSegment) !== null) {
+    return summary;
+  }
 
   for (const card of document.querySelectorAll<HTMLElement>(
     LIVESTREAM_CARD_SELECTOR,
