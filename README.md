@@ -27,13 +27,15 @@
 
   <br>
 
-  <a href="https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count/giojjfejghijolckdlkocggmbdmjchpm">
     <img src="https://img.shields.io/badge/Edge_Add--ons-Available-0078D4?logo=microsoftedge&logoColor=white&style=for-the-badge" alt="Available on Microsoft Edge Add-ons">
   </a>
 
   <br>
 
-  [![Edge Add-on Version](https://img.shields.io/badge/dynamic/json?label=edge&query=$.version&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/kick-viewer-count)](https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count)
+  [![Edge Add-on Version](https://img.shields.io/badge/dynamic/json?label=edge&query=$.version&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/giojjfejghijolckdlkocggmbdmjchpm)](https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count/giojjfejghijolckdlkocggmbdmjchpm)
+  [![Edge Add-on Users](https://img.shields.io/badge/dynamic/json?label=users&query=$.activeInstallCount&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/giojjfejghijolckdlkocggmbdmjchpm)](https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count/giojjfejghijolckdlkocggmbdmjchpm)
+  [![Edge Add-on Rating](https://img.shields.io/badge/dynamic/json?label=rating&query=$.averageRating&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/giojjfejghijolckdlkocggmbdmjchpm)](https://microsoftedge.microsoft.com/addons/detail/kick-viewer-count/giojjfejghijolckdlkocggmbdmjchpm)
 </div>
 
 ---
