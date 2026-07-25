@@ -13,6 +13,12 @@ updates:
       all:
         patterns:
           - "*"
+    ignore:
+      # Keep TypeScript on the latest supported major until typescript-eslint
+      # expands its peer dependency range beyond TypeScript 6.
+      - dependency-name: "typescript"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "github-actions"
     directory: "/"
