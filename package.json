@@ -54,7 +54,7 @@
     "@eslint/js": "10.0.1",
     "eslint": "10.8.0",
     "globals": "17.8.0",
-    "typescript": "7.0.2",
+    "typescript": "6.0.3",
     "typescript-eslint": "8.65.0",
     "wxt": "0.21.3"
   },
