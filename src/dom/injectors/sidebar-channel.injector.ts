@@ -115,16 +115,15 @@ export function updateSidebarChannelViewerCounts(
 }
 
 function findSidebarStatusContainer(row: HTMLElement): HTMLElement | null {
-  const existing = findViewerCountElement(row, TARGET);
-
-  if (existing?.parentElement instanceof HTMLElement) {
-    return existing.parentElement;
-  }
-
   let bestElement: HTMLElement | null = null;
   let bestScore = 0;
   const rowRect = row.getBoundingClientRect();
 
+  // Re-discover the status container on every update. Kick keeps our element
+  // when switching sidebar layouts, so its current parent may be the compact
+  // row even after the expanded status container has been rendered again.
+  // getVisibleText() ignores extension-owned elements, preventing the existing
+  // count from being selected as a status candidate during this scan.
   for (const element of row.querySelectorAll<HTMLElement>('span, div, p')) {
     const text = getVisibleText(element);
 
