@@ -52,11 +52,11 @@
   ],
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "eslint": "10.5.0",
-    "globals": "17.7.0",
+    "eslint": "10.8.0",
+    "globals": "17.8.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.62.0",
-    "wxt": "0.20.27"
+    "typescript-eslint": "8.65.0",
+    "wxt": "0.21.3"
   },
   "overrides": {
     "esbuild": "0.28.1",
