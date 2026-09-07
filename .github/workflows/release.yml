@@ -2,6 +2,17 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      store:
+        description: Store to publish to
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - chrome
+          - firefox
+          - edge
 
 permissions:
   contents: read
@@ -70,6 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
+      RELEASE_STORE: ${{ inputs.store }}
       CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
       CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
       CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
@@ -102,8 +114,24 @@ jobs:
           name: extension-zips
           path: .output
 
-      - name: Dry run — validate credentials for all stores
-        run: npm run submit:dry-run
+      - name: Select submission scripts
+        id: scripts
+        shell: bash
+        run: |
+          case "$RELEASE_STORE" in
+            all) SUFFIX="" ;;
+            chrome|firefox|edge) SUFFIX=":$RELEASE_STORE" ;;
+            *) echo "::error::Unknown store: $RELEASE_STORE"; exit 1 ;;
+          esac
+          echo "dry_run=submit:dry-run$SUFFIX" >> "$GITHUB_OUTPUT"
+          echo "publish=submit:publish$SUFFIX" >> "$GITHUB_OUTPUT"
 
-      - name: Submit to Chrome Web Store, Firefox Add-ons, and Edge Add-ons
-        run: npm run submit:publish
+      - name: Dry run for selected store(s)
+        env:
+          SUBMIT_SCRIPT: ${{ steps.scripts.outputs.dry_run }}
+        run: npm run "$SUBMIT_SCRIPT"
+
+      - name: Publish to selected store(s)
+        env:
+          SUBMIT_SCRIPT: ${{ steps.scripts.outputs.publish }}
+        run: npm run "$SUBMIT_SCRIPT"
