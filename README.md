@@ -114,7 +114,7 @@ Current DOM injectors target:
 - Sidebar following and recommended channel rows
 - Live channel headers
 
-DOM updates are debounced and run after SPA navigation, DOM mutations, and content script initialization. On `/browse` and `/category/*` routes, the content script actively fetches same-origin channel details for missing-count cards and polls `/current-viewers` for the discovered livestream IDs while the user remains on that route.
+DOM updates are batched within a short fixed window after SPA navigation, DOM mutations, and content script initialization, so ongoing page activity cannot keep postponing a count update. When switching channels, the header uses cached data immediately; if that data has expired, it can reuse the exact count still displayed in the matching sidebar row until fresh data arrives. On `/browse` and `/category/*` routes, the content script actively fetches same-origin channel details for missing-count cards and polls `/current-viewers` for the discovered livestream IDs while the user remains on that route.
 
 ## License
 

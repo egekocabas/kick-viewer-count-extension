@@ -71,7 +71,9 @@ export function createDomInjectionController(
     pendingReason = reason;
 
     if (updateTimer !== undefined) {
-      window.clearTimeout(updateTimer);
+      // Keep the first deadline: player/header activity must not postpone
+      // applying already-cached counts indefinitely.
+      return;
     }
 
     updateTimer = window.setTimeout(runUpdate, debounceMs);
@@ -121,6 +123,7 @@ export function createDomInjectionController(
 
     observer.observe(document.body, {
       childList: true,
+      characterData: true,
       subtree: true,
     });
   }
@@ -165,12 +168,15 @@ function installSpaNavigationObserver(): void {
     }, 0);
   });
 
-  // Support the Navigation API (Chrome 102+), used by some SPA routers for
-  // navigations that bypass history.pushState — e.g. Kick's PiP-mode Browse.
+  // Page-world history calls may bypass the isolated content script's wrappers.
+  // Observe the URL commit instead of waiting for navigatesuccess, which can be
+  // delayed by the router's asynchronous work. DOM mutations handle mounting.
   const nav = (window as Window & { navigation?: EventTarget }).navigation;
   if (nav) {
-    nav.addEventListener('navigatesuccess', () => {
-      window.dispatchEvent(new Event(URL_CHANGE_EVENT));
+    let previousUrl = window.location.href;
+    nav.addEventListener('currententrychange', () => {
+      dispatchUrlChangeIfNeeded(previousUrl);
+      previousUrl = window.location.href;
     });
   }
 }
@@ -193,6 +199,17 @@ function isExcludedSubtreeMutation(mutation: MutationRecord): boolean {
 }
 
 function isExtensionOwnedMutation(mutation: MutationRecord): boolean {
+  // React can remove our badge while reusing the surrounding channel header.
+  // Reconcile detached badges; moving a badge during our own update keeps it
+  // connected and does not require another pass.
+  if (Array.from(mutation.removedNodes).some((node) =>
+    node instanceof HTMLElement &&
+    node.matches(VIEWER_COUNT_SELECTOR) &&
+    !node.isConnected,
+  )) {
+    return false;
+  }
+
   if (isExtensionOwnedNode(mutation.target)) {
     return true;
   }
@@ -218,7 +235,6 @@ function isExtensionOwnedNode(node: Node): boolean {
   return (
     node.id === DOM_STYLE_ELEMENT_ID ||
     node.matches(VIEWER_COUNT_SELECTOR) ||
-    Boolean(node.closest(VIEWER_COUNT_SELECTOR)) ||
-    Boolean(node.querySelector(VIEWER_COUNT_SELECTOR))
+    Boolean(node.closest(VIEWER_COUNT_SELECTOR))
   );
 }
