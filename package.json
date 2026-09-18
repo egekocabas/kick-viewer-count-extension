@@ -42,7 +42,8 @@
     "submit:publish:edge": "npx wxt submit --edge-zip .output/*-edge.zip",
     "lint": "wxt prepare && eslint .",
     "lint:fix": "wxt prepare && eslint . --fix",
-    "typecheck": "wxt prepare && tsc --noEmit"
+    "typecheck": "wxt prepare && tsc --noEmit",
+    "test": "vitest run"
   },
   "keywords": [
     "browser-extension",
@@ -54,8 +55,10 @@
     "@eslint/js": "10.0.1",
     "eslint": "10.9.1",
     "globals": "17.11.0",
+    "happy-dom": "20.14.5",
     "typescript": "6.0.3",
     "typescript-eslint": "8.68.0",
+    "vitest": "5.0.1",
     "wxt": "0.21.4"
   },
   "overrides": {
