@@ -24,6 +24,30 @@ const SIDEBAR_ROW_SELECTOR = [
   'a[data-testid^="sidebar-recommended-channel-"]',
 ].join(', ');
 
+// Sidebar badges intentionally retain their last count when the API cache
+// expires. A channel header can reuse that same exact count during navigation.
+export function getRetainedSidebarViewerCount(slug: string): number | null {
+  for (const row of document.querySelectorAll<HTMLAnchorElement>(SIDEBAR_ROW_SELECTOR)) {
+    if (getKickChannelSlugFromHref(row.getAttribute('href')) !== slug) {
+      continue;
+    }
+
+    const element = findViewerCountElement(row, TARGET);
+    const rawCount = element?.dataset.kvcCount;
+
+    if (element?.dataset.kvcSlug !== slug || !rawCount?.trim()) {
+      continue;
+    }
+
+    const count = Number(rawCount);
+    if (Number.isSafeInteger(count) && count >= 0) {
+      return count;
+    }
+  }
+
+  return null;
+}
+
 export interface SidebarInjectorUpdateSummary {
   scanned: number;
   updated: number;

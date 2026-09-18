@@ -10,12 +10,15 @@ export function hasNativeLivestreamCardViewerCount(
   card: HTMLElement,
   thumbnailLink?: HTMLElement | null,
 ): boolean {
-  const searchRoot = thumbnailLink ?? card;
+  const searchRoot =
+    thumbnailLink ??
+    card.querySelector<HTMLElement>('[data-testid="media-card-thumbnail"]') ??
+    card;
   const visibleText = getVisibleText(searchRoot);
 
   return (
     VIEWER_WORD_PATTERN.test(visibleText) ||
-    hasNumericTitleNearViewerWord(searchRoot)
+    hasNumericTitleViewerCount(searchRoot)
   );
 }
 
@@ -81,13 +84,36 @@ export function isLiveText(text: string): boolean {
   return normalizeWhitespace(text).toLowerCase() === 'live';
 }
 
-function hasNumericTitleNearViewerWord(root: HTMLElement): boolean {
+function hasNumericTitleViewerCount(root: HTMLElement): boolean {
   return Array.from(root.querySelectorAll<HTMLElement>('[title]')).some(
     (element) => {
       const title = element.getAttribute('title') ?? '';
 
       if (!isCompactViewerCountText(title)) {
         return false;
+      }
+
+      // querySelectorAll also finds descendants of hidden badges. Check the
+      // whole path so they (and extension-owned counts) cannot suppress ours.
+      for (
+        let ancestor: HTMLElement | null = element;
+        ancestor;
+        ancestor = ancestor.parentElement
+      ) {
+        if (shouldIgnoreElement(ancestor)) {
+          return false;
+        }
+
+        if (ancestor === root) {
+          break;
+        }
+      }
+
+      // Kick's current thumbnail badge is number-only: <span title="2022">2K</span>.
+      // Require a displayed number as well as the title; LIVE and durations
+      // must still receive an extension count.
+      if (isCompactViewerCountText(getVisibleText(element))) {
+        return true;
       }
 
       const nearbyText = getVisibleText(element.parentElement ?? element);

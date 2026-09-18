@@ -63,6 +63,12 @@ export function updateLivestreamCardViewerCounts(
       continue;
     }
 
+    if (hasNativeLivestreamCardViewerCount(card, cardTarget.anchor)) {
+      summary.removed += removeViewerCountElements(card, TARGET);
+      summary.skippedNative += 1;
+      continue;
+    }
+
     const stream = getBestStreamBySlug(state, cardTarget.slug);
 
     if (!stream) {
@@ -76,12 +82,6 @@ export function updateLivestreamCardViewerCounts(
         summary.removed += removeViewerCountElements(card, TARGET);
         summary.skippedNoData += 1;
       }
-      continue;
-    }
-
-    if (hasNativeLivestreamCardViewerCount(card, cardTarget.anchor)) {
-      summary.removed += removeViewerCountElements(card, TARGET);
-      summary.skippedNative += 1;
       continue;
     }
 

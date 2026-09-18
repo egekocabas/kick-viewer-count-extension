@@ -11,6 +11,7 @@ import {
   hasNativeChannelPageViewerCount,
 } from '../native-count-detector';
 import { getCurrentKickChannelSlug } from '../slug';
+import { getRetainedSidebarViewerCount } from './sidebar-channel.injector';
 import {
   getBestStreamBySlug,
   type KickViewerCountState,
@@ -63,10 +64,11 @@ export function updateChannelHeaderViewerCount(
 
   const usernameElement = document.querySelector<HTMLElement>('#channel-username');
   const stream = getBestStreamBySlug(state, slug);
+  const viewerCount = stream?.viewerCount ?? getRetainedSidebarViewerCount(slug);
 
-  if (!usernameElement || !stream || stream.isLive === false) {
+  if (!usernameElement || viewerCount === null || stream?.isLive === false) {
     summary.removed += removeExisting(existing);
-    summary.skippedNoData += stream ? 0 : 1;
+    summary.skippedNoData += viewerCount === null ? 1 : 0;
     return summary;
   }
 
@@ -86,12 +88,12 @@ export function updateChannelHeaderViewerCount(
 
   const element = existing ?? createViewerCountElement('span');
 
-  const text = formatViewerCountFull(stream.viewerCount);
+  const text = formatViewerCountFull(viewerCount);
 
   const changed = updateViewerCountElement(element, {
     target: TARGET,
     slug,
-    viewerCount: stream.viewerCount,
+    viewerCount,
     text,
     className: 'kvc-channel-header-count',
   });
@@ -110,7 +112,7 @@ export function updateChannelHeaderViewerCount(
     logViewerCountDomUpdate({
       target: TARGET,
       slug,
-      viewerCount: stream.viewerCount,
+      viewerCount,
       text,
       element,
       hostElement: headerRoot ?? usernameElement,
