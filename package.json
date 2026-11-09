@@ -53,13 +53,13 @@
   ],
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "eslint": "10.13.0",
-    "globals": "17.13.0",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
     "happy-dom": "21.0.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.71.2",
+    "typescript-eslint": "8.72.1",
     "vitest": "5.0.5",
-    "wxt": "0.21.4"
+    "wxt": "0.21.5"
   },
   "overrides": {
     "esbuild": "0.28.1",
